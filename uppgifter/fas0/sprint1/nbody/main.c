@@ -21,7 +21,7 @@ typedef struct Star{
 
 static prec newPosition(prec *vel, prec force, prec pos, prec mass, prec dt){
   prec acc = force / mass;
-  *vel = (*vel) + (acc * dt);
+  *vel = *vel + (acc * dt);
   return pos + ((*vel) * dt) + ((acc * pow(dt, 2) / 2));
 }
 
@@ -97,7 +97,7 @@ static void copyToXBuffer(body* stars[], XPoint* points, int N){
 
 int main(int argc, char* argv[]){
   int N = 200;
-  int iter = 1000;
+  int iter = 10000;
 
   if(argc == 3){
     N = atoi(argv[1]);
