@@ -6,8 +6,8 @@ struct node {
 };
 
 struct edge {
-  void* node1;
-  void* node2;
+  Node* node1;
+  Node* node2;
   void* value;
 };
 
@@ -18,7 +18,6 @@ Node* mkNode(void* p){
 }
 
 Edge* mkEdge(Node* n1, Node* n2, void* v){
-  //Edge myEdge = {.node1 = n1, .node2 = n2, .minutes = m};
   Edge* edge = malloc(sizeof(Edge));
   edge -> node1 = n1;
   edge -> node2 = n2;
