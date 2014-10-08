@@ -39,3 +39,6 @@ TAGS
 *.vrb
 *.xdy
 *.tdo
+
+### C files ###
+*.o
