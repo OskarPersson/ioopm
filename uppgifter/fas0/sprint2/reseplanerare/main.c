@@ -11,38 +11,37 @@ Edge** mkEdges(char*** strarr, int n){
     Node* sndNode = NULL;
     int newBusValue = atoi(strarr[i][0]); //busslinje
     if (i > 0){
-      for (int j = 0; j < i; j++) {
+      for (int j = 0; j <= i; j++) {
 	if (edgeArr[j] != NULL){
 	  Edge* curEdge = edgeArr[j];
 	  char* firstValue = (char*)getValue(getEdgeFirst(curEdge));
 	  char* secondValue = (char*)getValue(getEdgeSecond(curEdge));
-	  int busValue = ((int*)getEdgeValue(curEdge))[0];
+	  int busValue = *(int*)getEdgeValue(curEdge);
 	  if (((strcmp(firstValue, strarr[i][1]) == 0 && strcmp(secondValue, strarr[i][2]) == 0) ||
 	       (strcmp(firstValue, strarr[i][2]) == 0 && strcmp(secondValue, strarr[i][1]) == 0))){ //all same
 	    if (busValue != newBusValue){ //different bus
-	      fstNode = mkNode(strarr[i][1]);
-	      sndNode = mkNode(strarr[i][2]);
-	      break;
+	      fstNode = getEdgeFirst(curEdge);
+	      sndNode = getEdgeSecond(curEdge);
 	    }else{
 	      fstNode = NULL;
 	      sndNode = NULL;
-	      break;
-	    }
+	    }	 
+	    break;
 	  }else if (strcmp(firstValue, strarr[i][1]) == 0){ //first, first
 	    fstNode = getEdgeFirst(curEdge);
 	    sndNode = mkNode(strarr[i][2]);
 	    break;
 	  }else if (strcmp(firstValue, strarr[i][2]) == 0){ //first, second
-	    fstNode = getEdgeFirst(curEdge);
-	    sndNode = mkNode(strarr[i][1]);
+	    fstNode = mkNode(strarr[i][1]);
+	    sndNode = getEdgeFirst(curEdge);
 	    break;
 	  }else if (strcmp(secondValue, strarr[i][1]) == 0){ //second, first
 	    fstNode = getEdgeSecond(curEdge);
 	    sndNode = mkNode(strarr[i][2]);
 	    break;
 	  }else if (strcmp(secondValue, strarr[i][2]) == 0){ //second, second
-	    fstNode = getEdgeSecond(curEdge);
-	    sndNode = mkNode(strarr[i][1]);
+	    fstNode = mkNode(strarr[i][1]);
+	    sndNode = getEdgeSecond(curEdge);
 	    break;
 	  }
 	}else{
@@ -55,13 +54,13 @@ Edge** mkEdges(char*** strarr, int n){
       fstNode = mkNode(strarr[i][1]);
       sndNode = mkNode(strarr[i][2]);
     }
+
+    int* edgeValue = malloc(sizeof(int));
+    *edgeValue = newBusValue;
 	
     if (fstNode != NULL && sndNode != NULL){
-      int* edgeValues = malloc(sizeof(int)*2);
-      edgeValues[0] = newBusValue; //busslinje
-      edgeValues[1] = atoi(strarr[i][3]); //minuter
-	  
-      Edge* newEdge = mkEdge(fstNode, sndNode, edgeValues);
+      int cost = atoi(strarr[i][3]);
+      Edge* newEdge = mkEdge(fstNode, sndNode, cost, edgeValue);
       edgeArr[i] = newEdge;
     }
     else{
@@ -69,6 +68,21 @@ Edge** mkEdges(char*** strarr, int n){
     }
   }
   return edgeArr;
+}
+
+Node* findNode(char* str, Edge** edges, int n){
+  for (int i = 0; i<n; i++){
+    if (edges[i] != NULL){
+      Node* fstNode = getEdgeFirst(edges[i]);
+      Node* sndNode = getEdgeSecond(edges[i]);
+      if (strcmp((char*)getValue(fstNode), str) == 0){
+	return fstNode;
+      }else if(strcmp((char*)getValue(sndNode), str) == 0){
+	return sndNode;
+      }
+    }
+  }
+  return NULL;
 }
 
 int main(int argc, char *argv[]){
@@ -83,7 +97,7 @@ int main(int argc, char *argv[]){
       Edge** edgeArr = mkEdges(arr, rows);
 
       fclose(file);
-	  
+      /*
       int index = 12;
       if (edgeArr[index] != NULL){
 	printf("Från\t\t%s\n"
@@ -92,13 +106,21 @@ int main(int argc, char *argv[]){
 	       "Minuter\t\t%d",
 	       (char*)getValue(getEdgeFirst(edgeArr[index])),
 	       (char*)getValue(getEdgeSecond(edgeArr[index])),
-	       ((int*)getEdgeValue(edgeArr[index]))[0],
-	       ((int*)getEdgeValue(edgeArr[index]))[1]);
+	       (int)getEdgeCost(edgeArr[index]),
+	       *(int*)getEdgeValue(edgeArr[index]));
       }else{
 	printf("Edge at index %d does not exist", index);
-      }
+      }*/
+      Node* start = NULL;
+      Node* end = NULL;
+      char* startStr = "Centralstationen";
+      char* endStr = "Centralstationen";
+      start = findNode(startStr, edgeArr, rows);
+      end = findNode(endStr, edgeArr, rows);
+      //printf("start: %s\n", (char*)getValue(start));
+      //printf("end: %s\n", (char*)getValue(end));
+      fastestPath(edgeArr, rows, start, end);
     }
   }
   return 0;
 }
-
