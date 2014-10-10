@@ -17,7 +17,7 @@ struct edge {
 Node* mkNode(void* p){
   Node* node = malloc(sizeof(Node));
   node -> value = p;
-  node -> currentCost = NULL;
+  node -> currentCost = -1;
   return node;
 }
 
@@ -60,11 +60,11 @@ Edge** nodeEdges(Edge** edges, int n, Node* node){
       Node* sndNode = edges[i] -> node2;
       
       if (node == fstNode || node == sndNode){
-	result[count] = edges[i];
-	Node* otherNode = (node == fstNode) ? sndNode : fstNode;
-	otherNode -> currentCost = edges[i] -> cost;
-	printf("othernode: %s\n", (char*)getValue(otherNode));
-	count++;
+		result[count] = edges[i];
+		Node* otherNode = (node == fstNode) ? sndNode : fstNode;
+		otherNode -> currentCost = edges[i] -> cost;
+		printf("othernode (%d): %s\n", *(int*)edges[i] -> value, (char*)getValue(otherNode));
+		count++;
       }
     }
   }
