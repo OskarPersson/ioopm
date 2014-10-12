@@ -85,8 +85,8 @@ Node* findNode(char* str, Edge** edges, int n){
 }
 
 int main(int argc, char *argv[]){
-  if (argc < 2){
-    puts("Usage: ./main network_file.txt");
+  if (argc < 4){
+    puts("Usage: ./main network_file.txt start end");
   }else{
     char* networkFileName = argv[1];
     FILE* file = fopen(networkFileName, "r");
@@ -96,28 +96,13 @@ int main(int argc, char *argv[]){
       Edge** edgeArr = mkEdges(arr, rows);
 
       fclose(file);
-      /*
-		int index = 12;
-		if (edgeArr[index] != NULL){
-		printf("Från\t\t%s\n"
-		"Till\t\t%s\n"
-		"Linje\t\t%d\n"
-		"Minuter\t\t%d",
-		(char*)getValue(getEdgeFirst(edgeArr[index])),
-		(char*)getValue(getEdgeSecond(edgeArr[index])),
-		(int)getEdgeCost(edgeArr[index]),
-		*(int*)getEdgeValue(edgeArr[index]));
-		}else{
-		printf("Edge at index %d does not exist", index);
-		}*/
+
       Node* start = NULL;
       Node* end = NULL;
-      char* startStr = "Grindstugan";
-      char* endStr = "Centralstationen";
+      char* startStr = argv[2];
+	  char* endStr = argv[3];
       start = findNode(startStr, edgeArr, rows);
       end = findNode(endStr, edgeArr, rows);
-      //printf("start: %s\n", (char*)getValue(start));
-      //printf("end: %s\n", (char*)getValue(end));
       fastestPath(edgeArr, rows, start, end);
     }
   }

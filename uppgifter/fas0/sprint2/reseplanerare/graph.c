@@ -1,10 +1,15 @@
 #include <stdlib.h>
 #include "graph.h"
 #include <stdio.h>
+#include <string.h>
 
 struct node {
   void* value;
   int currentCost;
+  Node* previous;
+  Edge* previousEdge;
+  Node* next;
+  Edge* nextEdge;
 };
 
 struct edge {
@@ -18,6 +23,10 @@ Node* mkNode(void* p){
   Node* node = malloc(sizeof(Node));
   node -> value = p;
   node -> currentCost = -1;
+  node -> previous = NULL;
+  node -> previousEdge = NULL;
+  node -> next = NULL;
+  node -> nextEdge = NULL;
   return node;
 }
 
@@ -58,12 +67,15 @@ Edge** nodeEdges(Edge** edges, int n, Node* node){
       
       Node* fstNode = edges[i] -> node1;
       Node* sndNode = edges[i] -> node2;
-      
-      if (node == fstNode || node == sndNode){
-		result[count] = edges[i];
+	  if (node == fstNode || node == sndNode){
 		Node* otherNode = (node == fstNode) ? sndNode : fstNode;
-		otherNode -> currentCost = edges[i] -> cost;
-		printf("othernode (%d): %s\n", *(int*)edges[i] -> value, (char*)getValue(otherNode));
+		if (otherNode -> currentCost == -1 || 
+			(node -> currentCost + edges[i] -> cost) < otherNode -> currentCost){
+		  otherNode -> currentCost = node -> currentCost + edges[i] -> cost;
+		  otherNode -> previous = node;
+		  otherNode -> previousEdge = edges[i];
+		  nodeEdges(edges, n, otherNode);
+		}
 		count++;
       }
     }
@@ -74,7 +86,26 @@ Edge** nodeEdges(Edge** edges, int n, Node* node){
 
 Edge** fastestPath(Edge** edges, int n, Node* start, Node* end){
   start->currentCost = 0; //mark start as visited
-  Edge** edgesToNode = nodeEdges(edges, n, start);
+  Edge** path = malloc(sizeof(edges));
+  Edge** edgesToStart = nodeEdges(edges, n, start);
+  Node* previousNode = end;
+  Node* nextNode = end;
+  Node* currentNode = end;
   
-  return edgesToNode;//path;
+  while(previousNode != start){
+	nextNode = previousNode;
+    previousNode = previousNode->previous;
+	previousNode -> next = nextNode;
+	previousNode -> nextEdge = nextNode -> previousEdge;
+  }
+  nextNode = start;
+  while(nextNode != end){
+	currentNode = nextNode;
+    nextNode = nextNode -> next;	
+	printf("%d %s -> %s\n", *(int*)getEdgeValue(currentNode->nextEdge), (char*) currentNode->value, (char*) nextNode->value);
+  }
+  
+  printf("Minutes: %d", end->currentCost);
+  
+  return path;
 }
