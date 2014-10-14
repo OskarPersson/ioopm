@@ -18,7 +18,7 @@ char* removeWhitespace(char* str){
 	}
   }
 
-  char* strdup = malloc(sizeof(char)*i+1);
+  char* strdup = calloc(i+1, sizeof(char));
   
   strncpy(strdup, str, i);
   
@@ -45,6 +45,7 @@ char** separateString(char* str, char* separator){
     token = strtok(NULL, separator);
     i++;
   }
+  free(strdup);
   return arr;
 };
 
@@ -61,10 +62,9 @@ int countRowsInFile(FILE* file){
 //saves all lines in an array and returns it
 char*** parsefile(FILE* file, int rows){
   char*** arr = malloc(sizeof(char**)*rows);
-  char buffer[1024];
+  char buffer[128];
   int ctr = 0;
-  while( fgets(buffer, 1024, file) ) {
-	arr[ctr] = malloc(sizeof(arr[ctr]) * 4);
+  while( fgets(buffer, 128, file) ) {
 	arr[ctr] = separateString(buffer, ",");
 	ctr++;
   }

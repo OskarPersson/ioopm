@@ -5,7 +5,7 @@
 #include "parse.h"
 
 Edge** mkEdges(char*** strarr, int n){
-  Edge** edgeArr = malloc(sizeof(Edge*)*n);
+  Edge** edgeArr = calloc(n, sizeof(Edge*));
   for (int i=0; i<n; i++){
     Node* fstNode = NULL;
     Node* sndNode = NULL;
@@ -42,16 +42,24 @@ Edge** mkEdges(char*** strarr, int n){
 		  }
 		}else{
 		  if (fstNode == NULL){
-			fstNode = mkNode(strarr[i][1]);
+			char* fstString = malloc(sizeof(char)*strlen(strarr[i][1])+1);
+			strcpy(fstString, strarr[i][1]);
+			fstNode = mkNode(fstString);
 		  }
 		  if (sndNode == NULL){
-			sndNode = mkNode(strarr[i][2]);
+			char* sndString = malloc(sizeof(char)*strlen(strarr[i][2])+1);
+			strcpy(sndString, strarr[i][2]);
+			sndNode = mkNode(sndString);
 		  }
 		}
       }
     }else{
-      fstNode = mkNode(strarr[i][1]);
-      sndNode = mkNode(strarr[i][2]);
+	  char* fstString = malloc(sizeof(char)*strlen(strarr[i][1])+1);
+	  strcpy(fstString, strarr[i][1]);
+	  char* sndString = malloc(sizeof(char)*strlen(strarr[i][2])+1);
+	  strcpy(sndString, strarr[i][2]);
+      fstNode = mkNode(fstString);
+      sndNode = mkNode(sndString);
     }
 
     int* edgeValue = malloc(sizeof(int));
@@ -69,8 +77,9 @@ Edge** mkEdges(char*** strarr, int n){
   return edgeArr;
 }
 
-Node* findNode(char* str, Edge** edges, int n){
-  for (int i = 0; i<n; i++){
+Node* findNode(char* str, Graph* graph){
+  Edge** edges = graphEdges(graph);
+  for (int i = 0; i<graphSize(graph); i++){
     if (edges[i] != NULL){
       Node* fstNode = getEdgeFirst(edges[i]);
       Node* sndNode = getEdgeSecond(edges[i]);
@@ -94,6 +103,7 @@ int main(int argc, char *argv[]){
       int rows = countRowsInFile(file);
       char*** arr = parsefile(file, rows);
       Edge** edgeArr = mkEdges(arr, rows);
+	  Graph* graph = mkGraph(edgeArr, rows);
 
       fclose(file);
 
@@ -101,9 +111,19 @@ int main(int argc, char *argv[]){
       Node* end = NULL;
       char* startStr = argv[2];
 	  char* endStr = argv[3];
-      start = findNode(startStr, edgeArr, rows);
-      end = findNode(endStr, edgeArr, rows);
-      fastestPath(edgeArr, rows, start, end);
+      start = findNode(startStr, graph);
+      end = findNode(endStr, graph);
+
+	  fastestPath(graph, start, end);
+
+	  for (int i = 0; i < rows; i++){
+		for (int j = 0; j < 4; j++) {
+		  free(arr[i][j]);
+		}
+		free(arr[i]);
+	  }
+	  free(arr);
+	  rmGraph(graph);
     }
   }
   return 0;

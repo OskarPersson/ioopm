@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <string.h>
 
+struct graph{
+  Edge** edges;
+  int size;
+};
+
 struct node {
   void* value;
   int currentCost;
@@ -18,6 +23,65 @@ struct edge {
   int cost;
   void* value;
 };
+
+Graph* mkGraph(Edge** e, int s){
+  Graph* g = malloc(sizeof(Graph));
+  g -> edges = e;
+  g -> size = s;
+  return g;
+}
+
+void rmGraph(Graph* graph){
+  Edge** edges = graph->edges;
+  for (int i = 0; i<graph->size; i++){
+	Node* firstNode = getEdgeFirst(edges[i]);
+	Node* secondNode = getEdgeSecond(edges[i]);
+	if (firstNode != NULL || secondNode != NULL){
+	  for (int j = 0; j<graph->size; j++){
+		if (getEdgeFirst(edges[j]) != NULL){
+		  if (firstNode == getEdgeFirst(edges[j]) ||
+			  secondNode == getEdgeFirst(edges[j])){
+			free(getEdgeFirst(edges[j]) -> value);
+			setNodeValue(getEdgeFirst(edges[j]), NULL);
+			setEdgeFirst(edges[j], NULL);
+		  }
+		}
+
+		if (getEdgeSecond(edges[j]) != NULL){
+		  if (firstNode == getEdgeSecond(edges[j]) ||
+			  secondNode == getEdgeSecond(edges[j])){
+			free(getEdgeSecond(edges[j]) -> value);
+			setNodeValue(getEdgeSecond(edges[j]), NULL);
+			setEdgeSecond(edges[j], NULL);
+		  }
+		}
+	  }
+
+	  if (firstNode != NULL){
+		free(firstNode);
+	  }
+
+	  if (secondNode != NULL){
+		free(secondNode);
+	  }
+	}
+
+	free(edges[i] -> value);
+  }
+  for (int i=0; i<graph->size; i++){
+	free(edges[i]);
+  }
+  free(graph->edges);
+  free(graph);
+}
+
+int graphSize(Graph* g){
+  return g->size;
+}
+
+Edge** graphEdges(Graph* g){
+  return g->edges;
+}
 
 Node* mkNode(void* p){
   Node* node = malloc(sizeof(Node));
@@ -43,6 +107,10 @@ void* getValue(Node* n){
   return n -> value;
 }
 
+void setNodeValue(Node* n, void* p){
+  n -> value = p;
+}
+
 Node* getEdgeFirst(Edge* e){
   return e->node1;
 };
@@ -50,6 +118,14 @@ Node* getEdgeFirst(Edge* e){
 Node* getEdgeSecond(Edge* e){
   return e->node2;
 };
+
+void setEdgeFirst(Edge* e, Node* n){
+  e->node1 = n;
+}
+
+void setEdgeSecond(Edge* e, Node* n){
+  e->node2 = n;
+}
 
 int getEdgeCost(Edge* e){
   return e->cost;
@@ -59,12 +135,12 @@ void* getEdgeValue(Edge* e){
   return e->value;
 };
 
-Edge** nodeEdges(Edge** edges, int n, Node* node){
-  Edge** result = malloc(sizeof(Edge*)*n);
+void nodeEdges(Graph* g, Node* node){
   int count = 0;
+  int n = g -> size;
+  Edge** edges = g -> edges;
   for (int i = 0; i<n; i++){
     if (edges[i] != NULL){
-      
       Node* fstNode = edges[i] -> node1;
       Node* sndNode = edges[i] -> node2;
 	  if (node == fstNode || node == sndNode){
@@ -74,20 +150,17 @@ Edge** nodeEdges(Edge** edges, int n, Node* node){
 		  otherNode -> currentCost = node -> currentCost + edges[i] -> cost;
 		  otherNode -> previous = node;
 		  otherNode -> previousEdge = edges[i];
-		  nodeEdges(edges, n, otherNode);
+		  nodeEdges(g, otherNode);
 		}
 		count++;
       }
     }
   }
-  result = realloc(result, sizeof(Edge*)*count);
-  return result;
 }
 
-Edge** fastestPath(Edge** edges, int n, Node* start, Node* end){
-  start->currentCost = 0; //mark start as visited
-  Edge** path = malloc(sizeof(edges));
-  Edge** edgesToStart = nodeEdges(edges, n, start);
+void fastestPath(Graph* g, Node* start, Node* end){
+  start->currentCost = 0; //mark start as visited;
+  nodeEdges(g, start);
   Node* previousNode = end;
   Node* nextNode = end;
   Node* currentNode = end;
@@ -102,10 +175,9 @@ Edge** fastestPath(Edge** edges, int n, Node* start, Node* end){
   while(nextNode != end){
 	currentNode = nextNode;
     nextNode = nextNode -> next;	
-	printf("%d %s -> %s\n", *(int*)getEdgeValue(currentNode->nextEdge), (char*) currentNode->value, (char*) nextNode->value);
+	printf("%d %s -> %s\n", *(int*)getEdgeValue(currentNode->nextEdge),
+		   (char*) currentNode->value, (char*) nextNode->value);
   }
   
-  printf("Minutes: %d", end->currentCost);
-  
-  return path;
+  printf("Minutes: %d\n", end->currentCost);
 }
