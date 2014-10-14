@@ -102,7 +102,6 @@ Edge* mkEdge(Node* n1, Node* n2, int c, void* v){
 }
 
 void rmNode(Node* n, Graph* graph){
-  Edge** edges = graph -> edges;
   free(n);
   for (int i = 0; i < graph -> size-1; i++){
 	if (getEdgeFirst(graph->edges[i]) == n ||
