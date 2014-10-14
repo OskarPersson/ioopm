@@ -37,7 +37,7 @@ void rmGraph(Graph* graph){
 	Node* firstNode = getEdgeFirst(edges[i]);
 	Node* secondNode = getEdgeSecond(edges[i]);
 	if (firstNode != NULL || secondNode != NULL){
-	  for (int j = 0; j<graph->size; j++){
+	  for (int j = i; j<graph->size; j++){
 		if (getEdgeFirst(edges[j]) != NULL){
 		  if (firstNode == getEdgeFirst(edges[j]) ||
 			  secondNode == getEdgeFirst(edges[j])){
