@@ -67,8 +67,6 @@ void rmGraph(Graph* graph){
 	}
 
 	free(edges[i] -> value);
-  }
-  for (int i=0; i<graph->size; i++){
 	free(edges[i]);
   }
   free(graph->edges);
@@ -101,6 +99,21 @@ Edge* mkEdge(Node* n1, Node* n2, int c, void* v){
   edge -> cost = c;
   edge -> value = v;
   return edge;
+}
+
+void rmNode(Node* n, Graph* graph){
+  Edge** edges = graph -> edges;
+  free(n);
+  for (int i = 0; i < graph -> size-1; i++){
+	if (getEdgeFirst(graph->edges[i]) == n ||
+		getEdgeSecond(graph->edges[i]) == n){
+	  free(graph->edges[i]);
+	  for(int j = i; j < graph->size-1; j++) graph->edges[j] = graph->edges[j + 1];
+	  graph->size--;
+	  graph->edges = realloc(graph->edges, graph->size * sizeof(Edge*));
+	  i--;
+	}
+  }
 }
 
 void* getValue(Node* n){
