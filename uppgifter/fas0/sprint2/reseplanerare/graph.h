@@ -9,6 +9,7 @@ Edge** graphEdges(Graph*);
 Node* mkNode(void*);
 void rmNode(Node*, Graph*);
 Edge* mkEdge(Node*, Node*, int, void*);
+void rmEdge(Edge*, Graph*);
 void* getValue(Node*);
 void setNodeValue(Node*, void*);
 Node* getEdgeFirst(Edge*);
