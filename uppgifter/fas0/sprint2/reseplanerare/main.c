@@ -4,18 +4,18 @@
 #include "graph.h"
 #include "parse.h"
 
-Edge** mkEdges(char*** strarr, int n){
-  Edge** edgeArr = calloc(n, sizeof(Edge*));
+Edge **mkEdges(char ***strarr, int n){
+  Edge **edgeArr = calloc(n, sizeof(Edge*));
   for (int i=0; i<n; i++){
-    Node* fstNode = NULL;
-    Node* sndNode = NULL;
+    Node *fstNode = NULL;
+    Node *sndNode = NULL;
     int newBusValue = atoi(strarr[i][0]); //busslinje
     if (i > 0){
       for (int j = 0; j <= i; j++) {
 		if (edgeArr[j] != NULL){
-		  Edge* curEdge = edgeArr[j];
-		  char* firstValue = (char*)getValue(getEdgeFirst(curEdge));
-		  char* secondValue = (char*)getValue(getEdgeSecond(curEdge));
+		  Edge *curEdge = edgeArr[j];
+		  char *firstValue = (char*)getValue(getEdgeFirst(curEdge));
+		  char *secondValue = (char*)getValue(getEdgeSecond(curEdge));
 		  int busValue = *(int*)getEdgeValue(curEdge);
 		  if (((strcmp(firstValue, strarr[i][1]) == 0 && strcmp(secondValue, strarr[i][2]) == 0) ||
 			   (strcmp(firstValue, strarr[i][2]) == 0 && strcmp(secondValue, strarr[i][1]) == 0))){ //all same
@@ -42,32 +42,32 @@ Edge** mkEdges(char*** strarr, int n){
 		  }
 		}else{
 		  if (fstNode == NULL){
-			char* fstString = malloc(sizeof(char)*strlen(strarr[i][1])+1);
+			char *fstString = malloc(sizeof(char)*strlen(strarr[i][1])+1);
 			strcpy(fstString, strarr[i][1]);
 			fstNode = mkNode(fstString);
 		  }
 		  if (sndNode == NULL){
-			char* sndString = malloc(sizeof(char)*strlen(strarr[i][2])+1);
+			char *sndString = malloc(sizeof(char)*strlen(strarr[i][2])+1);
 			strcpy(sndString, strarr[i][2]);
 			sndNode = mkNode(sndString);
 		  }
 		}
       }
     }else{
-	  char* fstString = malloc(sizeof(char)*strlen(strarr[i][1])+1);
+	  char *fstString = malloc(sizeof(char)*strlen(strarr[i][1])+1);
 	  strcpy(fstString, strarr[i][1]);
-	  char* sndString = malloc(sizeof(char)*strlen(strarr[i][2])+1);
+	  char *sndString = malloc(sizeof(char)*strlen(strarr[i][2])+1);
 	  strcpy(sndString, strarr[i][2]);
       fstNode = mkNode(fstString);
       sndNode = mkNode(sndString);
     }
 
-    int* edgeValue = malloc(sizeof(int));
+    int *edgeValue = malloc(sizeof(int));
     *edgeValue = newBusValue;
 	
     if (fstNode != NULL && sndNode != NULL){
       int cost = atoi(strarr[i][3]);
-      Edge* newEdge = mkEdge(fstNode, sndNode, cost, edgeValue);
+      Edge *newEdge = mkEdge(fstNode, sndNode, cost, edgeValue);
       edgeArr[i] = newEdge;
     }
     else{
@@ -77,12 +77,12 @@ Edge** mkEdges(char*** strarr, int n){
   return edgeArr;
 }
 
-Node* findNode(char* str, Graph* graph){
-  Edge** edges = graphEdges(graph);
+Node *findNode(char *str, Graph *graph){
+  Edge **edges = graphEdges(graph);
   for (int i = 0; i<graphSize(graph); i++){
     if (edges[i] != NULL){
-      Node* fstNode = getEdgeFirst(edges[i]);
-      Node* sndNode = getEdgeSecond(edges[i]);
+      Node *fstNode = getEdgeFirst(edges[i]);
+      Node *sndNode = getEdgeSecond(edges[i]);
       if (strcmp((char*)getValue(fstNode), str) == 0){
 		return fstNode;
       }else if(strcmp((char*)getValue(sndNode), str) == 0){
@@ -97,20 +97,20 @@ int main(int argc, char *argv[]){
   if (argc < 4){
     puts("Usage: ./main network_file.txt start end");
   }else{
-    char* networkFileName = argv[1];
-    FILE* file = fopen(networkFileName, "r");
+    char *networkFileName = argv[1];
+    FILE *file = fopen(networkFileName, "r");
     if (file){
       int rows = countRowsInFile(file);
-      char*** arr = parsefile(file, rows);
-      Edge** edgeArr = mkEdges(arr, rows);
-	  Graph* graph = mkGraph(edgeArr, rows);
+      char ***arr = parsefile(file, rows);
+      Edge **edgeArr = mkEdges(arr, rows);
+	  Graph *graph = mkGraph(edgeArr, rows);
 
       fclose(file);
 
-      Node* start = NULL;
-      Node* end = NULL;
-      char* startStr = argv[2];
-	  char* endStr = argv[3];
+      Node *start = NULL;
+      Node *end = NULL;
+      char *startStr = argv[2];
+	  char *endStr = argv[3];
       start = findNode(startStr, graph);
       end = findNode(endStr, graph);
 

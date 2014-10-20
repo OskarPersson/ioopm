@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-char* removeWhitespace(char* str){  
+char *removeWhitespace(char *str){  
   //Remove leading whitespace
   while(isspace(*str)) str++;
 
@@ -18,17 +18,17 @@ char* removeWhitespace(char* str){
 	}
   }
 
-  char* strdup = calloc(i+1, sizeof(char));
+  char *strdup = calloc(i+1, sizeof(char));
   
   strncpy(strdup, str, i);
   
   return strdup;
 }
 
-char** separateString(char* str, char* separator){
-  char* strdup = malloc(strlen(str)+1);
+char **separateString(char *str, char *separator){
+  char *strdup = malloc(strlen(str)+1);
   strcpy(strdup, str);
-  char* token = strtok(str, separator);
+  char *token = strtok(str, separator);
 
   int i = 0;
   while(token != NULL){
@@ -36,7 +36,7 @@ char** separateString(char* str, char* separator){
 	token = strtok(NULL, separator);
   }
 
-  char** arr = malloc(sizeof(char*)*i);
+  char **arr = malloc(sizeof(char*)*i);
 
   i = 0;
   token = strtok(strdup, separator);
@@ -49,7 +49,7 @@ char** separateString(char* str, char* separator){
   return arr;
 };
 
-int countRowsInFile(FILE* file){
+int countRowsInFile(FILE *file){
   int ctr = 0;
   while(!feof(file)){
 	ctr = (fgetc(file) == '\n') ? ctr+1 : ctr;
@@ -60,8 +60,8 @@ int countRowsInFile(FILE* file){
 
 //parses each line to an array of strings based on the commas,
 //saves all lines in an array and returns it
-char*** parsefile(FILE* file, int rows){
-  char*** arr = malloc(sizeof(char**)*rows);
+char ***parsefile(FILE *file, int rows){
+  char ***arr = malloc(sizeof(char**)*rows);
   char buffer[128];
   int ctr = 0;
   while( fgets(buffer, 128, file) ) {
