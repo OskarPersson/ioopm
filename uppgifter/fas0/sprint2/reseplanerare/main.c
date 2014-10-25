@@ -14,8 +14,8 @@ Edge **mkEdges(char ***strarr, int n){
       for (int j = 0; j <= i; j++) {
 		if (edgeArr[j] != NULL){
 		  Edge *curEdge = edgeArr[j];
-		  char *firstValue = (char*)getValue(getEdgeFirst(curEdge));
-		  char *secondValue = (char*)getValue(getEdgeSecond(curEdge));
+		  char *firstValue = (char*)getNodeValue(getEdgeFirst(curEdge));
+		  char *secondValue = (char*)getNodeValue(getEdgeSecond(curEdge));
 		  int busValue = *(int*)getEdgeValue(curEdge);
 		  if (((strcmp(firstValue, strarr[i][1]) == 0 && strcmp(secondValue, strarr[i][2]) == 0) ||
 			   (strcmp(firstValue, strarr[i][2]) == 0 && strcmp(secondValue, strarr[i][1]) == 0))){ //all same
@@ -83,9 +83,9 @@ Node *findNode(char *str, Graph *graph){
     if (edges[i] != NULL){
       Node *fstNode = getEdgeFirst(edges[i]);
       Node *sndNode = getEdgeSecond(edges[i]);
-      if (strcmp((char*)getValue(fstNode), str) == 0){
+      if (strcmp((char*)getNodeValue(fstNode), str) == 0){
 		return fstNode;
-      }else if(strcmp((char*)getValue(sndNode), str) == 0){
+      }else if(strcmp((char*)getNodeValue(sndNode), str) == 0){
 		return sndNode;
       }
     }
