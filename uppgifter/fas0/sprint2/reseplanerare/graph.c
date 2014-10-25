@@ -6,6 +6,7 @@
 struct graph{
   Edge **edges;
   int size;
+  void *value;
 };
 
 struct node {
@@ -73,6 +74,14 @@ void rmGraph(Graph *graph){
   free(graph);
 }
 
+void *getGraphValue(Graph *g){
+  return g->value;
+}
+
+void setGraphValue(Graph *g, void *p){
+  g->value = p;
+}
+
 int graphSize(Graph *g){
   return g->size;
 }
@@ -125,7 +134,7 @@ void rmEdge(Edge *e, Graph *graph){
   }
 }
 
-void *getValue(Node *n){
+void *getNodeValue(Node *n){
   return n->value;
 }
 
@@ -156,6 +165,10 @@ int getEdgeCost(Edge *e){
 void *getEdgeValue(Edge *e){
   return e->value;
 };
+
+void setEdgeValue(Edge *e, void *p){
+  e->value = p;
+}
 
 void nodeEdges(Graph *g, Node *node){
   int count = 0;
