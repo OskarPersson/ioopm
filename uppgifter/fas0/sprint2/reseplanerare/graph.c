@@ -214,5 +214,5 @@ void fastestPath(Graph *g, Node *start, Node *end){
 		   (char*) currentNode->value, (char*) nextNode->value);
   }
   
-  printf("Minutes: %d\n", end->currentCost);
+  printf("Minuter: %d\n", end->currentCost);
 }
