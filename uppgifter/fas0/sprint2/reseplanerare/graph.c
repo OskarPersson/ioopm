@@ -35,40 +35,41 @@ Graph *mkGraph(Edge **e, int s){
 void rmGraph(Graph *graph){
   Edge **edges = graph->edges;
   for (int i = 0; i<graph->size; i++){
-	Node *firstNode = getEdgeFirst(edges[i]);
-	Node *secondNode = getEdgeSecond(edges[i]);
-	if (firstNode != NULL || secondNode != NULL){
-	  for (int j = i; j<graph->size; j++){
-		if (getEdgeFirst(edges[j]) != NULL){
-		  if (firstNode == getEdgeFirst(edges[j]) ||
-			  secondNode == getEdgeFirst(edges[j])){
-			free(getEdgeFirst(edges[j])->value);
-			setNodeValue(getEdgeFirst(edges[j]), NULL);
-			setEdgeFirst(edges[j], NULL);
+	if (edges[i] != NULL){
+	  Node *firstNode = getEdgeFirst(edges[i]);
+	  Node *secondNode = getEdgeSecond(edges[i]);
+	  if (firstNode != NULL || secondNode != NULL){
+		for (int j = i; j<graph->size; j++){
+		  if (getEdgeFirst(edges[j]) != NULL){
+			if (firstNode == getEdgeFirst(edges[j]) ||
+				secondNode == getEdgeFirst(edges[j])){
+			  free(getEdgeFirst(edges[j])->value);
+			  setNodeValue(getEdgeFirst(edges[j]), NULL);
+			  setEdgeFirst(edges[j], NULL);
+			}
+		  }
+
+		  if (getEdgeSecond(edges[j]) != NULL){
+			if (firstNode == getEdgeSecond(edges[j]) ||
+				secondNode == getEdgeSecond(edges[j])){
+			  free(getEdgeSecond(edges[j])->value);
+			  setNodeValue(getEdgeSecond(edges[j]), NULL);
+			  setEdgeSecond(edges[j], NULL);
+			}
 		  }
 		}
 
-		if (getEdgeSecond(edges[j]) != NULL){
-		  if (firstNode == getEdgeSecond(edges[j]) ||
-			  secondNode == getEdgeSecond(edges[j])){
-			free(getEdgeSecond(edges[j])->value);
-			setNodeValue(getEdgeSecond(edges[j]), NULL);
-			setEdgeSecond(edges[j], NULL);
-		  }
+		if (firstNode != NULL){
+		  free(firstNode);
+		}
+
+		if (secondNode != NULL){
+		  free(secondNode);
 		}
 	  }
-
-	  if (firstNode != NULL){
-		free(firstNode);
-	  }
-
-	  if (secondNode != NULL){
-		free(secondNode);
-	  }
+	  free(edges[i]->value);
+	  free(edges[i]);
 	}
-
-	free(edges[i]->value);
-	free(edges[i]);
   }
   free(graph->edges);
   free(graph);

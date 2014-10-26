@@ -13,6 +13,6 @@ test: test.c graph.o
 parse.o: parse.c
 	$(CC) $(FLAGS) -c parse.c
 run:
-	./main nätverk.txt "Allianshallen" "Prastgardsgatan"
+	./main nätverk.txt
 
 .PHONY: test

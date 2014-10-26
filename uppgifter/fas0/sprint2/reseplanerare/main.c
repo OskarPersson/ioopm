@@ -4,9 +4,14 @@
 #include "graph.h"
 #include "parse.h"
 
-Edge **mkEdges(char ***strarr, int n){
-  Edge **edgeArr = calloc(n, sizeof(Edge*));
-  for (int i=0; i<n; i++){
+Edge **mkEdges(char ***strarr, int *n){
+  Edge **edgeArr = calloc(*n, sizeof(Edge*));
+  int edgeCounter = 0;
+  for (int i=0; i<*n; i++){
+	//Is it a well-formed row?
+	if (strarr[i][3] == NULL){
+	  continue;
+	}
     Node *fstNode = NULL;
     Node *sndNode = NULL;
     int newBusValue = atoi(strarr[i][0]); //busslinje
@@ -68,12 +73,10 @@ Edge **mkEdges(char ***strarr, int n){
     if (fstNode != NULL && sndNode != NULL){
       int cost = atoi(strarr[i][3]);
       Edge *newEdge = mkEdge(fstNode, sndNode, cost, edgeValue);
-      edgeArr[i] = newEdge;
-    }
-    else{
-      edgeArr[i] = NULL;
+      edgeArr[edgeCounter++] = newEdge;
     }
   }
+  *n = edgeCounter;
   return edgeArr;
 }
 
@@ -94,35 +97,64 @@ Node *findNode(char *str, Graph *graph){
 }
 
 int main(int argc, char *argv[]){
-  if (argc < 4){
-    puts("Usage: ./main network_file.txt start end");
+  if (argc < 2){
+    puts("Usage: ./main network_file.txt");
   }else{
     char *networkFileName = argv[1];
-    FILE *file = fopen(networkFileName, "r");
-    if (file){
-      int rows = countRowsInFile(file);
-      char ***arr = parsefile(file, rows);
-      Edge **edgeArr = mkEdges(arr, rows);
-	  Graph *graph = mkGraph(edgeArr, rows);
+    FILE *networkFile = fopen(networkFileName, "r");
+	char *startFileName = "start.txt";
+    FILE *startFile = fopen(startFileName, "r");
+    if (networkFile && startFile){
+      int networkRows = countRowsInFile(networkFile);
+	  int startRows = countRowsInFile(startFile);
+      char ***networkArr = parsefile(networkFile, networkRows);
+	  char ***startArr = parsefile(startFile, startRows);
+      Edge **edgeArr = mkEdges(networkArr, &networkRows);
+	  Graph *graph = mkGraph(edgeArr, networkRows);
 
-      fclose(file);
+      fclose(networkFile);
+	  fclose(startFile);
 
       Node *start = NULL;
       Node *end = NULL;
-      char *startStr = argv[2];
-	  char *endStr = argv[3];
-      start = findNode(startStr, graph);
-      end = findNode(endStr, graph);
+	  char *startStr = calloc(128, sizeof(char));
+	  char *endStr = calloc(128, sizeof(char));
+	  
+	  while (strcmp(startStr, "") == 0 || start == NULL){
+		printf("Från: ");
+		fgets(startStr, 128, stdin);
+		//remove trailing new-line
+		if ((strlen(startStr) > 0) && (startStr[strlen(startStr)-1] == '\n')){
+		  startStr[strlen(startStr)-1] = '\0';
+		}
+		start = findNode(startStr, graph);
+		if (start == NULL){
+		  printf("Hållplatsen \"%s\" existerar inte\n", startStr);
+		}
+	  }
+
+	  while (strcmp(endStr, "") == 0 || end == NULL){
+		printf("Till: ");
+		fgets(endStr, 128, stdin);
+		//remove trailing new-line
+		if ((strlen(endStr) > 0) && (endStr[strlen(endStr)-1] == '\n')){
+		  endStr[strlen(endStr)-1] = '\0';
+		}
+		end = findNode(endStr, graph);
+		if (end == NULL){
+		  printf("Hållplatsen \"%s\" existerar inte\n", endStr);
+		}
+	  }
 
 	  fastestPath(graph, start, end);
 
-	  for (int i = 0; i < rows; i++){
+	  for (int i = 0; i < networkRows; i++){
 		for (int j = 0; j < 4; j++) {
-		  free(arr[i][j]);
+		  free(networkArr[i][j]);
 		}
-		free(arr[i]);
+		free(networkArr[i]);
 	  }
-	  free(arr);
+	  free(networkArr);
 	  rmGraph(graph);
     }
   }
