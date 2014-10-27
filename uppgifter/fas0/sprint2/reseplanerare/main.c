@@ -1,15 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "graph.h"
 #include "parse.h"
+
+int isNumeric (char *str){
+  while(*str){
+	if (!isdigit(*str)){
+	  return 0;
+	}else{
+	  str++;
+	}
+  }
+  return 1;
+}
 
 Edge **mkEdges(char ***strarr, int *n){
   Edge **edgeArr = calloc(*n, sizeof(Edge*));
   int edgeCounter = 0;
   for (int i=0; i<*n; i++){
 	//Is it a well-formed row?
-	if (strarr[i][3] == NULL){
+	
+	if (strarr[i][3] == NULL || 
+		!(isNumeric(strarr[i][0]) && !isNumeric(strarr[i][1]) &&
+		  !isNumeric(strarr[i][2]) && isNumeric(strarr[i][3]))){
 	  continue;
 	}
     Node *fstNode = NULL;
@@ -76,6 +91,7 @@ Edge **mkEdges(char ***strarr, int *n){
       edgeArr[edgeCounter++] = newEdge;
     }
   }
+  edgeArr = realloc(edgeArr, sizeof(Edge*) * edgeCounter);
   *n = edgeCounter;
   return edgeArr;
 }
