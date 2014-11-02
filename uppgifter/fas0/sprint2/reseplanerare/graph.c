@@ -194,6 +194,31 @@ void nodeEdges(Graph *g, Node *node){
   }
 }
 
+void nodeEdgesOneLine(Graph *g, Node *node, int line){
+  int count = 0;
+  int n = g->size;
+  Edge **edges = g->edges;
+  for (int i = 0; i<n; i++){
+    if (edges[i] != NULL){
+	  if (line == *(int*)edges[i]->value){
+		Node *fstNode = edges[i]->node1;
+		Node *sndNode = edges[i]->node2;
+		if (node == fstNode || node == sndNode){
+		  Node *otherNode = (node == fstNode) ? sndNode : fstNode;
+		  if (otherNode->currentCost == -1 || 
+			  (node->currentCost + edges[i]->cost) < otherNode->currentCost){
+			otherNode->currentCost = node->currentCost + edges[i]->cost;
+			otherNode->previous = node;
+			otherNode->previousEdge = edges[i];
+			nodeEdgesOneLine(g, otherNode, line);
+		  }
+		  count++;
+		}
+	  }
+    }
+  }
+}
+
 void fastestPath(Graph *g, Node *start, Node *end){
   start->currentCost = 0; //mark start as visited;
   nodeEdges(g, start);
@@ -216,4 +241,37 @@ void fastestPath(Graph *g, Node *start, Node *end){
   }
   
   printf("Minuter: %d\n", end->currentCost);
+}
+
+void fastestPathOneLine(Graph *g, Node *start, Node *end){
+  start->currentCost = 0; //mark start as visited;
+
+  for (int i = 0; i < g->size; i++) {
+    if (g->edges[i]->node1 == start || g->edges[i]->node2 == start){
+	  nodeEdgesOneLine(g, start, *(int*)g->edges[i]->value);
+	}
+  }
+
+  Node *previousNode = end;
+  Node *nextNode = end;
+  Node *currentNode = end;
+
+  if (end->previous != NULL){
+	while(previousNode != start){
+	  nextNode = previousNode;
+	  previousNode = previousNode->previous;
+	  previousNode->next = nextNode;
+	  previousNode->nextEdge = nextNode->previousEdge;
+	}
+	nextNode = start;
+	while(nextNode != end){
+	  currentNode = nextNode;
+	  nextNode = nextNode->next;	
+	  printf("%d %s -> %s\n", *(int*)getEdgeValue(currentNode->nextEdge),
+			 (char*) currentNode->value, (char*) nextNode->value);
+	}
+	printf("Minuter: %d\n", end->currentCost);
+  }else{
+	printf("Det går inte att åka från %s till %s utan byte\n", (char*)start->value, (char*)end->value);
+  }
 }

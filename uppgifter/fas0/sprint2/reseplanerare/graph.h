@@ -22,3 +22,4 @@ int getEdgeCost(Edge*);
 void *getEdgeValue(Edge*);
 void setEdgeValue(Edge*, void*);
 void fastestPath(Graph*, Node*, Node*);
+void fastestPathOneLine(Graph*, Node*, Node*);

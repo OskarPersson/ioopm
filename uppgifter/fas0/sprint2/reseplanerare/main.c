@@ -162,7 +162,7 @@ int main(int argc, char *argv[]){
 		}
 	  }
 
-	  fastestPath(graph, start, end);
+	  fastestPathOneLine(graph, start, end);
 
 	  for (int i = 0; i < networkRows; i++){
 		for (int j = 0; j < 4; j++) {
