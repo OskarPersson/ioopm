@@ -256,6 +256,16 @@ int fastestPathOneLine(Graph *g, Node *start, Node *end){
 	}
   }
 
+  Node *previousNode = end;
+  Node *nextNode = end;
+
+  while(previousNode != start){
+	nextNode = previousNode;
+    previousNode = previousNode->previous;
+	previousNode->next = nextNode;
+	previousNode->nextEdge = nextNode->previousEdge;
+  }
+
   if (end->previous != NULL){
 	return end->currentCost;
   }else{
@@ -264,17 +274,10 @@ int fastestPathOneLine(Graph *g, Node *start, Node *end){
 }
 
 void printPath(Node *start, Node *end){
-  Node *previousNode = end;
   Node *nextNode = end;
   Node *currentNode = end;
 
   if (end->previous != NULL){
-	while(previousNode != start){
-	  nextNode = previousNode;
-	  previousNode = previousNode->previous;
-	  previousNode->next = nextNode;
-	  previousNode->nextEdge = nextNode->previousEdge;
-	}
 	nextNode = start;
 	while(nextNode != end){
 	  currentNode = nextNode;
