@@ -174,6 +174,15 @@ int main(int argc, char *argv[]){
 		free(networkArr[i]);
 	  }
 	  free(networkArr);
+
+	  for (int i = 0; i < startRows; i++){
+		for (int j = 0; j < 3; j++) {
+		  free(startArr[i][j]);
+		}
+		free(startArr[i]);
+	  }
+	  free(startArr);
+
 	  rmGraph(graph);
     }
   }
