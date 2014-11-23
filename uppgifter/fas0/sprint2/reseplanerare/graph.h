@@ -31,6 +31,7 @@ void rmNode(Node*, Graph*);
  * @param firstNode the first node
  * @param secondNode the second node
  * @param cost the cost it takes to go via the edge
+ * @param p the value of the edge
  * @return the new edge
  */
 Edge *mkEdge(Node*, Node*, int, void*);
