@@ -6,7 +6,6 @@
 struct graph{
   Edge **edges;
   int size;
-  void *value;
 };
 
 struct node {
@@ -73,14 +72,6 @@ void rmGraph(Graph *graph){
   }
   free(graph->edges);
   free(graph);
-}
-
-void *getGraphValue(Graph *g){
-  return g->value;
-}
-
-void setGraphValue(Graph *g, void *p){
-  g->value = p;
 }
 
 int graphSize(Graph *g){

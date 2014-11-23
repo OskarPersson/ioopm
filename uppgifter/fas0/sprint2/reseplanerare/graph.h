@@ -4,8 +4,6 @@ typedef struct edge Edge;
 
 Graph *mkGraph(Edge**, int);
 void rmGraph(Graph*);
-void *getGraphValue(Graph*);
-void setGraphValue(Graph*, void*);
 int graphSize(Graph*);
 Edge **graphEdges(Graph*);
 Node *mkNode(void*);
