@@ -171,6 +171,19 @@ void setEdgeValue(Edge *e, void *p){
   e->value = p;
 }
 
+Edge *nextEdge(Node *n){
+  return n->nextEdge;
+}
+Edge *prevEdge(Node *n){
+  return n->previousEdge;
+}
+Node *nextNode(Node *n){
+  return n->next;
+}
+Node *prevNode(Node *n){
+  return n->previous;
+}
+
 void nodeEdges(Graph *g, Node *node){
   int count = 0;
   int n = g->size;
@@ -243,7 +256,7 @@ void fastestPath(Graph *g, Node *start, Node *end){
   printf("Minuter: %d\n", end->currentCost);
 }
 
-void fastestPathOneLine(Graph *g, Node *start, Node *end){
+int fastestPathOneLine(Graph *g, Node *start, Node *end){
   start->currentCost = 0; //mark start as visited;
 
   for (int i = 0; i < g->size; i++) {
@@ -252,6 +265,14 @@ void fastestPathOneLine(Graph *g, Node *start, Node *end){
 	}
   }
 
+  if (end->previous != NULL){
+	return end->currentCost;
+  }else{
+	return -1;
+  }
+}
+
+void printPath(Node *start, Node *end){
   Node *previousNode = end;
   Node *nextNode = end;
   Node *currentNode = end;
@@ -271,7 +292,5 @@ void fastestPathOneLine(Graph *g, Node *start, Node *end){
 			 (char*) currentNode->value, (char*) nextNode->value);
 	}
 	printf("Minuter: %d\n", end->currentCost);
-  }else{
-	printf("Det går inte att åka från %s till %s utan byte\n", (char*)start->value, (char*)end->value);
   }
 }

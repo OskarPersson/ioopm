@@ -165,7 +165,69 @@ int main(int argc, char *argv[]){
 	  free(startStr);
 	  free(endStr);
 
-	  fastestPathOneLine(graph, start, end);
+	  int min = fastestPathOneLine(graph, start, end);
+	  
+	  if (min > 0){
+		printPath(start, end);
+		
+		char *givenTime = malloc(sizeof(char)*6);
+		printf("När vill du åka? ");
+		fgets(givenTime, 6, stdin);
+		
+		int givenHour = atoi(strtok(givenTime, ":"));
+		int givenMin = atoi(strtok(NULL, ":"));
+		
+		int line = *(int*)getEdgeValue(nextEdge(start));
+		char *first = NULL;
+		char *second = NULL;
+		for (int i = 0; i < startRows; i++){
+		  if (atoi(startArr[i][0]) == line){
+			if (first == NULL){
+			  first = startArr[i][1];
+			}else if(strcmp(first, startArr[i][1]) != 0){
+			  second = startArr[i][1];
+			  break;
+			}
+		  }
+		}
+
+		Node *firstNode = findNode(first, graph);
+		Node *secondNode = findNode(second, graph);
+		int firstMin = fastestPathOneLine(graph, start, firstNode);
+		int secondMin = fastestPathOneLine(graph, start, secondNode);
+
+		Node *bestNode;
+
+		if (firstMin < secondMin){
+		  bestNode = firstNode;
+		}else{
+		  bestNode = secondNode;
+		}
+		
+		int extraMin = firstMin < secondMin ? firstMin : secondMin;
+		
+		puts("\nMöjliga avgångar: \n");
+		for (int i = 0; i < startRows; i++){
+		  if (atoi(startArr[i][0]) == line && strcmp(startArr[i][1], (char*)getNodeValue(bestNode)) == 0){
+			int h = atoi(strtok(startArr[i][2], ":"));
+			int m = atoi(strtok(NULL, ":"));
+			
+			m = m + extraMin;
+			if (m > 60){
+			  h++;
+			  m = m - 60;
+			}
+			
+			if ((givenHour == h && givenMin <= m) || givenHour < h ){
+			  printf("%02d:%02d\n", h, m);
+			}
+		  }
+		}
+		free(givenTime);
+	  }else{
+		printf("Det går inte att åka från %s till %s utan byte\n", (char*)getNodeValue(start), (char*)getNodeValue(end));
+	  }
+	  
 
 	  for (int i = 0; i < networkRows; i++){
 		for (int j = 0; j < 4; j++) {
