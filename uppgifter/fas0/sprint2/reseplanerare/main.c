@@ -1,3 +1,7 @@
+/** 
+ *  @file	main.c
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,6 +9,10 @@
 #include "graph.h"
 #include "parse.h"
 
+/**@brief checks if a string only contains digits
+ * @param str the string to look in
+ * @return 1 if the string only contains digits, else false
+ */
 int isNumeric (char *str){
   while(*str){
 	if (!isdigit(*str)){
@@ -16,6 +24,11 @@ int isNumeric (char *str){
   return 1;
 }
 
+/**@brief creates an array of edges
+ * @param strarr an array of string arrays where the first element in the string array is the bus, the second is the source, the third the destination and the fourth the cost (time)
+ * @param n the number of edges to create
+ * @return an array of edges where each edge is connected to two nodes, has a cost and a bus
+ */
 Edge **mkEdges(char ***strarr, int *n){
   Edge **edgeArr = calloc(*n, sizeof(Edge*));
   int edgeCounter = 0;
@@ -96,6 +109,11 @@ Edge **mkEdges(char ***strarr, int *n){
   return edgeArr;
 }
 
+/**@brief searches for a node with the given string as value
+ * @param str the value that the node have
+ * @param graph the graph to search in
+ * @return the node with the given string as value
+ */
 Node *findNode(char *str, Graph *graph){
   Edge **edges = graphEdges(graph);
   for (int i = 0; i<graphSize(graph); i++){
@@ -112,6 +130,11 @@ Node *findNode(char *str, Graph *graph){
   return NULL;
 }
 
+/**@brief starts the application which gets the fastest path from one node to another
+ * @param argc number of arguments given at start
+ * @param argv arguments given at start
+ * @return 0
+ */
 int main(int argc, char *argv[]){
   if (argc < 2){
     puts("Usage: ./main network_file.txt");
