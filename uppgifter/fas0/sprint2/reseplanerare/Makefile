@@ -10,9 +10,11 @@ graph.o: graph.c
 test: test.c graph.o parse.o
 	$(CC) $(FLAGS) -o test test.c graph.o parse.o -lcunit
 	./test
+clean:
+	rm *.o
 parse.o: parse.c
 	$(CC) $(FLAGS) -c parse.c
 run:
-	./main nätverk.txt
+	./main network.txt start.txt
 
 .PHONY: test
