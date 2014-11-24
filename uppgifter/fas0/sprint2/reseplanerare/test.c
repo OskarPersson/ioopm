@@ -135,7 +135,7 @@ void testFastestPath(void){
   Edge *edge3 = mkEdge(node2, node3, 4, val3);
   Edge *edge4 = mkEdge(node2, node4, 5, val2);
 
-  Edge **edgeArr = malloc(sizeof(Edge*)*2);
+  Edge **edgeArr = malloc(sizeof(Edge*)*4);
   edgeArr[0] = edge1;
   edgeArr[1] = edge2;
   edgeArr[2] = edge3;
