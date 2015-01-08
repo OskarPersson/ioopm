@@ -2,7 +2,7 @@
 # Make starsim to only benchmark
 
 CC= gcc
-CFLAGS= -std=c99 -Wall -pg -ggdb
+CFLAGS= -std=c99 -Wall -ggdb
 
 starsim:
 	$(CC) $(CFLAGS) main.c -o main  -lm 
